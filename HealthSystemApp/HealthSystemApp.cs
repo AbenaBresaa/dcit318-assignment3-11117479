@@ -63,4 +63,56 @@ public class Prescription
         DateIssued = dateIssued;
     }
 }
+public class HealthSystemApp
+{
+    private Repository<Patient> _patientRepo = new Repository<Patient>();
+    private Repository<Prescription> _prescriptionRepo = new Repository<Prescription>();
+    private Dictionary<int, List<Prescription>> _prescriptionMap = new Dictionary<int, List<Prescription>>();
+
+    public void SeedData()
+    {
+        _patientRepo.Add(new Patient(1, "Princess Burland", 27, "Female"));
+        _patientRepo.Add(new Patient(2, "Dadson Johnson", 40, "Male"));
+        _patientRepo.Add(new Patient(3, "James Brown", 50, "Male"));
+
+        _prescriptionRepo.Add(new Prescription(1, 1, "Paracetamol", DateTime.Now.AddDays(-3)));
+        _prescriptionRepo.Add(new Prescription(2, 1, "Vitamin C", DateTime.Now.AddDays(-2)));
+        _prescriptionRepo.Add(new Prescription(3, 2, "Antibiotic", DateTime.Now.AddDays(-1)));
+        _prescriptionRepo.Add(new Prescription(4, 3, "Bloodtonic", DateTime.Now));
+        _prescriptionRepo.Add(new Prescription(5, 3, "Multivitamin", DateTime.Now));
+    }
+
+    public void BuildPrescriptionMap()
+    {
+        var allPrescriptions = _prescriptionRepo.GetAll();
+        _prescriptionMap = allPrescriptions
+            .GroupBy(p => p.PatientId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+    }
+
+    public void PrintAllPatients()
+    {
+        Console.WriteLine("Patients:");
+        foreach (var patient in _patientRepo.GetAll())
+        {
+            Console.WriteLine($"{patient.Id}: {patient.Name}, Age {patient.Age}, Gender: {patient.Gender}");
+        }
+    }
+
+    public void PrintPrescriptionsForPatient(int patientId)
+    {
+        if (_prescriptionMap.TryGetValue(patientId, out var prescriptions))
+        {
+            Console.WriteLine($"\nPrescriptions for Patient ID {patientId}:");
+            foreach (var p in prescriptions)
+            {
+                Console.WriteLine($"- {p.MedicationName} (Issued on: {p.DateIssued.ToShortDateString()})");
+            }
+        }
+        else
+        {
+            Console.WriteLine("No prescriptions found for this patient.");
+        }
+    }
+}
 
