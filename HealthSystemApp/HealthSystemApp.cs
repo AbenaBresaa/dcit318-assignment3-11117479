@@ -32,3 +32,35 @@ public class Repository<T>
         return false;
     }
 }
+public class Patient
+{
+    public int Id;
+    public string Name;
+    public int Age;
+    public string Gender;
+
+    public Patient(int id, string name, int age, string gender)
+    {
+        Id = id;
+        Name = name;
+        Age = age;
+        Gender = gender;
+    }
+}
+
+public class Prescription
+{
+    public int Id;
+    public int PatientId;
+    public string MedicationName;
+    public DateTime DateIssued;
+
+    public Prescription(int id, int patientId, string medicationName, DateTime dateIssued)
+    {
+        Id = id;
+        PatientId = patientId;
+        MedicationName = medicationName;
+        DateIssued = dateIssued;
+    }
+}
+
